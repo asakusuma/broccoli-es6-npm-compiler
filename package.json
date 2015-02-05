@@ -12,10 +12,17 @@
   "dependencies": {
     "browserify": "*",
     "broccoli": "*",
-    "broccoli-caching-writer": "*"
+    "broccoli-es6modules": "^0.4.3",
+    "broccoli-caching-writer": "*",
+    "acorn": "*"
   },
   "engines": {
     "node": ">= 0.10.0"
   },
-  "scripts": {}
+  "scripts": {},
+  "devDependencies": {
+    "broccoli-browserify": "^0.1.0",
+    "broccoli-merge-trees": "^0.2.1",
+    "walk-sync": "^0.1.3"
+  }
 }
