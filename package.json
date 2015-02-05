@@ -1,0 +1,21 @@
+{
+  "name": "broccoli-es6-npm-compiler",
+  "description": "Compile ES6 modules along with npm dependencies",
+  "version": "0.0.1",
+  "author": "Asa Kusuma",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asakusuma/broccoli-es6-npm-compiler"
+  },
+  "homepage": "https://github.com/asakusuma/broccoli-es6-npm-compiler",
+  "dependencies": {
+    "browserify": "*",
+    "broccoli": "*",
+    "broccoli-caching-writer": "*"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {}
+}
