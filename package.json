@@ -10,11 +10,12 @@
   },
   "homepage": "https://github.com/asakusuma/broccoli-es6-npm-compiler",
   "dependencies": {
-    "browserify": "*",
+    "acorn": "*",
     "broccoli": "*",
-    "broccoli-es6modules": "^0.4.3",
     "broccoli-caching-writer": "*",
-    "acorn": "*"
+    "broccoli-es6modules": "^0.4.3",
+    "browserify": "*",
+    "rsvp": "^3.0.16"
   },
   "engines": {
     "node": ">= 0.10.0"
