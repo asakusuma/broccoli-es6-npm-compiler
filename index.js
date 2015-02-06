@@ -19,19 +19,23 @@ module.exports = function(tree) {
   var es6Main = p['jsnext:main'];
   var main = p.main;
 
-  var directives, js;
+  var es6Directives, directives, js;
 
-  if (es6Main) {
+  if (es6Main && main) {
     directives = getDirectives(es6Main);
+    es6Directives = getDirectives(main);
     js = new transpileES6(directives.parent, {
       format: 'cjs'
     });
   } else {
-    throw 'You must declare a jsnext:main file in the module: ' + p.name;
+    throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }
 
   return broccoliBrowserify(js, {
     entries: ['./' + directives.entry],
-    outputFile: 'bundle.js'
+    outputFile: 'bundle.js', //directives.entry
+    bundle: {
+      standalone: p.name
+    }
   });
 }
