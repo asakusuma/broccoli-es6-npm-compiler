@@ -1,6 +1,9 @@
 var transpileES6 = require('broccoli-es6modules');
-var broccoliBrowserify = require('broccoli-browserify');
+var browserify = require('./lib/browserify');
 var fs = require('fs');
+var acorn = require('acorn');
+var walkSync = require('walk-sync');
+var path = require('path');
 
 function getDirectives(main) {
   var segs = main.split('/');
@@ -8,6 +11,49 @@ function getDirectives(main) {
   return {
     entry: entry,
     parent: segs.join('/')
+  };
+}
+
+function findImports(ast, filter) {
+
+  if (typeof filter !== 'function') {
+    filter = function (a) { return a };
+  }
+
+  if (ast.type === 'ImportDeclaration') {
+    var id = ast.source.value;
+    var filtered = filter(id);
+    if (filtered) {
+      return filtered;
+    } else {
+      return [];
+    }
+  } else if(ast.body && ast.body.forEach) {
+    var result = [];
+    ast.body.forEach(function(ast) {
+      result = result.concat(findImports(ast, filter));
+    });
+    return result;
+  } else {
+    return [];
+  }
+};
+
+function getImports(code) {
+  var ast = acorn.parse(code, {
+    ecmaVersion: 6
+  });
+  return {
+    local: findImports(ast, function(id) {
+      if (id.substring(0,4) !== 'npm:') {
+        return id;
+      }
+    }),
+    npm: findImports(ast, function(id) {
+      if (id.substring(0,4) === 'npm:') {
+        return id.substring(4);
+      }
+    })
   };
 }
 
@@ -21,9 +67,35 @@ module.exports = function(tree) {
 
   var es6Directives, directives, js;
 
+  var imports = {
+    local: [],
+    npm: []
+  };
+
   if (es6Main && main) {
     directives = getDirectives(es6Main);
     es6Directives = getDirectives(main);
+
+
+
+
+    walkSync(directives.parent).forEach(function(relativePath) {
+      var filePath = path.join(directives.parent, relativePath);
+      var extension = filePath.substr(filePath.length - 3);
+      if (extension === '.js') {
+        var file = fs.readFileSync(filePath, 'utf8');
+
+        var fileImports = getImports(file);
+
+        imports.local = imports.local.concat(fileImports.local);
+        imports.npm = imports.npm.concat(fileImports.npm);
+      }
+    });
+
+
+
+
+
     js = new transpileES6(directives.parent, {
       format: 'cjs'
     });
@@ -31,11 +103,14 @@ module.exports = function(tree) {
     throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }
 
-  return broccoliBrowserify(js, {
+  return browserify(js, {
     entries: ['./' + directives.entry],
     outputFile: 'bundle.js', //directives.entry
-    bundle: {
+    browserify: {
+      ignore: [],
       standalone: p.name
-    }
+    },
+    npm: imports.npm,
+    local: imports.local
   });
 }
