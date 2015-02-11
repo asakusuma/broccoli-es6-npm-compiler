@@ -104,7 +104,7 @@ module.exports = function(tree) {
     throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }
 
-  var bundle = browserify(js, {
+  var bundle = new browserify(js, {
     entries: ['./' + directives.entry],
     outputFile: directives.entry, //directives.entry
     browserify: {
@@ -115,7 +115,17 @@ module.exports = function(tree) {
     local: imports.local
   });
 
-  return merge([js, bundle], {
+  var exports = merge([js, bundle], {
     overwrite: true
   });
-}
+
+  return exports;
+
+  return new browserify(exports, {
+    entries: ['./' + directives.entry],
+    outputFile: directives.entry, //directives.entry
+    browserify: {
+      standalone: p.name
+    }
+  });
+};
