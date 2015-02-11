@@ -115,6 +115,8 @@ module.exports = function(tree) {
     local: imports.local
   });
 
+  return bundle;
+
   var exports = merge([js, bundle], {
     overwrite: true
   });
