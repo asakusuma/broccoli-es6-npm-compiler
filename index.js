@@ -116,18 +116,4 @@ module.exports = function(tree) {
   });
 
   return bundle;
-
-  var exports = merge([js, bundle], {
-    overwrite: true
-  });
-
-  return exports;
-
-  return new browserify(exports, {
-    entries: ['./' + directives.entry],
-    outputFile: directives.entry, //directives.entry
-    browserify: {
-      standalone: p.name
-    }
-  });
 };
