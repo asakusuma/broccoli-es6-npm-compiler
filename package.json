@@ -14,6 +14,7 @@
     "broccoli": "*",
     "broccoli-caching-writer": "*",
     "broccoli-es6modules": "^0.4.3",
+    "broccoli-merge-trees": "^0.2.1",
     "broccoli-writer": "^0.1.1",
     "browserify": "^8.1.3",
     "deamdify": "*",

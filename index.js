@@ -4,6 +4,7 @@ var fs = require('fs');
 var acorn = require('acorn');
 var walkSync = require('walk-sync');
 var path = require('path');
+var merge = require('broccoli-merge-trees');
 
 function getDirectives(main) {
   var segs = main.split('/');
@@ -103,14 +104,18 @@ module.exports = function(tree) {
     throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }
 
-  return browserify(js, {
+  var bundle = browserify(js, {
     entries: ['./' + directives.entry],
-    outputFile: 'bundle.js', //directives.entry
+    outputFile: directives.entry, //directives.entry
     browserify: {
       ignore: [],
       standalone: p.name
     },
     npm: imports.npm,
     local: imports.local
+  });
+
+  return merge([js, bundle], {
+    overwrite: true
   });
 }
