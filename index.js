@@ -105,12 +105,8 @@ module.exports = function(tree) {
   }
 
   var bundle = new browserify(js, {
-    entries: ['./' + directives.entry],
+    root: './' + directives.entry,
     outputFile: directives.entry, //directives.entry
-    browserify: {
-      ignore: [],
-      standalone: p.name
-    },
     npm: imports.npm,
     local: imports.local
   });
