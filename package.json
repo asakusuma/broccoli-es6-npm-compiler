@@ -2,7 +2,7 @@
   "name": "broccoli-es6-npm-compiler",
   "description": "Compile ES6 modules along with npm dependencies",
   "version": "0.0.3",
-  "keywords": ["broccoli-plugin", "es6", "module", "modules", "transpile", "compile", "compiler", "browserify", "npm"],
+  "keywords": ["broccoli-plugin", "es6", "module", "modules", "transpile", "compile", "compiler", "browserify", "npm", "javascript"],
   "author": "Asa Kusuma",
   "main": "index.js",
   "repository": {
