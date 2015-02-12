@@ -44,18 +44,11 @@ function getImports(code) {
   var ast = acorn.parse(code, {
     ecmaVersion: 6
   });
-  return {
-    local: findImports(ast, function(id) {
-      if (id.substring(0,4) !== 'npm:') {
-        return id;
-      }
-    }),
-    npm: findImports(ast, function(id) {
-      if (id.substring(0,4) === 'npm:') {
-        return id.substring(4);
-      }
-    })
-  };
+  return findImports(ast, function(id) {
+    if (id.substring(0,4) === 'npm:') {
+      return id.substring(4);
+    }
+  });
 }
 
 module.exports = function(tree) {
@@ -66,12 +59,7 @@ module.exports = function(tree) {
   var es6Main = p['jsnext:main'];
   var main = p.main;
 
-  var es6Directives, directives, js;
-
-  var imports = {
-    local: [],
-    npm: []
-  };
+  var es6Directives, directives, js, npmImports = [];
 
   if (es6Main && main) {
     directives = getDirectives(es6Main);
@@ -82,11 +70,9 @@ module.exports = function(tree) {
       var extension = filePath.substr(filePath.length - 3);
       if (extension === '.js') {
         var file = fs.readFileSync(filePath, 'utf8');
-
         var fileImports = getImports(file);
 
-        imports.local = imports.local.concat(fileImports.local);
-        imports.npm = imports.npm.concat(fileImports.npm);
+        npmImports = npmImports.concat(fileImports);
       }
     });
 
@@ -101,8 +87,7 @@ module.exports = function(tree) {
     root: './' + directives.entry,
     outputFile: directives.entry,
     name: p.name,
-    npm: imports.npm,
-    local: imports.local
+    npmImports: npmImports
   });
 
   return bundle;
