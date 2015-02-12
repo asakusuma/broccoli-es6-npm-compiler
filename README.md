@@ -1,6 +1,16 @@
 # broccoli-es6-npm-compiler
 [Broccoli](http://broccolijs.com/) plugin that compiles ES6 modules along with npm dependencies into a single bundle using [Browserify](https://github.com/substack/node-browserify). The plugin looks for the `jsnext:main` property in your package.json, compiles any ES6 modules to CommonJS modules, browserifies them, and saves the whole thing as single file based on the `main` property of the package.json.
 
+For importing npm modules in your ES6 code, use the `npm:` prefix. For instance, if you wanted to use the [RSVP promise library](https://github.com/tildeio/rsvp.js/), you would import it like so:
+```javascript
+import npmModule from 'npm:rsvp';
+
+// Use regular syntax for local modules
+import myLocalModule from './lib/my-local-module';
+```
+
+This prefix, as well as the entire plugin, was inspired by [ember-browserify](https://github.com/ef4/ember-browserify).
+
 ## Example
 
 Let's say your package.json looks something like this:
@@ -9,8 +19,8 @@ Let's say your package.json looks something like this:
 {
   "name": "MyModule",
   "main": "exports/my-module.js",
-  "jsnext:main": "lib/index.js"
-  ...
+  "jsnext:main": "lib/index.js",
+  //...
 }
 
 ```
