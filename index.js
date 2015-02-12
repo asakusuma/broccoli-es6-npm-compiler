@@ -15,8 +15,8 @@ function getDirectives(main) {
   };
 }
 
+// Given a filter, find import statements that match
 function findImports(ast, filter) {
-
   if (typeof filter !== 'function') {
     filter = function (a) { return a };
   }
@@ -40,7 +40,8 @@ function findImports(ast, filter) {
   }
 };
 
-function getImports(code) {
+// Find all the npm imported modules
+function getNpmImports(code) {
   var ast = acorn.parse(code, {
     ecmaVersion: 6
   });
@@ -59,24 +60,28 @@ module.exports = function(tree) {
   var es6Main = p['jsnext:main'];
   var main = p.main;
 
+  if (!main) {
+    main = es6Main;
+  }
+
   var es6Directives, directives, js, npmImports = [];
 
   if (es6Main && main) {
-    directives = getDirectives(es6Main);
-    es6Directives = getDirectives(main);
+    es6Directives = getDirectives(es6Main);
+    directives = getDirectives(main);
 
-    walkSync(directives.parent).forEach(function(relativePath) {
-      var filePath = path.join(directives.parent, relativePath);
+    walkSync(es6Directives.parent).forEach(function(relativePath) {
+      var filePath = path.join(es6Directives.parent, relativePath);
       var extension = filePath.substr(filePath.length - 3);
       if (extension === '.js') {
         var file = fs.readFileSync(filePath, 'utf8');
-        var fileImports = getImports(file);
+        var fileNpmImports = getNpmImports(file);
 
-        npmImports = npmImports.concat(fileImports);
+        npmImports = npmImports.concat(fileNpmImports);
       }
     });
 
-    js = new transpileES6(directives.parent, {
+    js = new transpileES6(es6Directives.parent, {
       format: 'cjs'
     });
   } else {
@@ -84,7 +89,7 @@ module.exports = function(tree) {
   }
 
   var bundle = new browserify(js, {
-    root: './' + directives.entry,
+    root: './' + es6Directives.entry,
     outputFile: directives.entry,
     name: p.name,
     npmImports: npmImports
