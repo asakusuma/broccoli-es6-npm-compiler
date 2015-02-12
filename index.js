@@ -4,7 +4,6 @@ var fs = require('fs');
 var acorn = require('acorn');
 var walkSync = require('walk-sync');
 var path = require('path');
-var merge = require('broccoli-merge-trees');
 
 function getDirectives(main) {
   var segs = main.split('/');
