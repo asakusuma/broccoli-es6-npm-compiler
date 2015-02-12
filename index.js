@@ -4,6 +4,7 @@ var fs = require('fs');
 var acorn = require('acorn');
 var walkSync = require('walk-sync');
 var path = require('path');
+var umdify = require('broccoli-umd');
 
 function getDirectives(main) {
   var segs = main.split('/');
@@ -51,7 +52,8 @@ function getNpmImports(code) {
   });
 }
 
-module.exports = function(tree) {
+module.exports = function(options) {
+  options = options || {};
   // Read the host package.json
   var p = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
@@ -87,12 +89,17 @@ module.exports = function(tree) {
     throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }
 
-  var bundle = new browserify(js, {
+  var cjs = new browserify(js, {
     root: './' + es6Directives.entry,
     outputFile: directives.entry,
     name: p.name,
     npmImports: npmImports
   });
 
-  return bundle;
+  var umd = umdify([cjs], directives.entry, directives.entry, {
+    amdModuleId: options.amdModuleId || null,
+    globalAlias: options.globalName || p.name
+  });
+
+  return umd;
 };
