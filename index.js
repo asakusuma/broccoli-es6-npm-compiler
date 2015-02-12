@@ -77,9 +77,6 @@ module.exports = function(tree) {
     directives = getDirectives(es6Main);
     es6Directives = getDirectives(main);
 
-
-
-
     walkSync(directives.parent).forEach(function(relativePath) {
       var filePath = path.join(directives.parent, relativePath);
       var extension = filePath.substr(filePath.length - 3);
@@ -93,10 +90,6 @@ module.exports = function(tree) {
       }
     });
 
-
-
-
-
     js = new transpileES6(directives.parent, {
       format: 'cjs'
     });
@@ -106,7 +99,8 @@ module.exports = function(tree) {
 
   var bundle = new browserify(js, {
     root: './' + directives.entry,
-    outputFile: directives.entry, //directives.entry
+    outputFile: directives.entry,
+    name: p.name,
     npm: imports.npm,
     local: imports.local
   });
