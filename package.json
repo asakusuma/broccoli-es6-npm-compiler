@@ -1,7 +1,7 @@
 {
   "name": "broccoli-es6-npm-compiler",
   "description": "Compile ES6 modules along with npm dependencies",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "keywords": [
     "broccoli-plugin",
     "es6",

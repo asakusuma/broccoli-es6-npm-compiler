@@ -43,7 +43,8 @@ function findImports(ast, filter) {
 // Find all the npm imported modules
 function getNpmImports(code) {
   var ast = acorn.parse(code, {
-    ecmaVersion: 6
+    ecmaVersion: 6,
+    sourceType: 'module'
   });
   return findImports(ast, function(id) {
     if (id.substring(0,4) === 'npm:') {
