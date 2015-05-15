@@ -4,7 +4,7 @@ var fs = require('fs');
 var acorn = require('acorn');
 var walkSync = require('walk-sync');
 var path = require('path');
-var umdify = require('broccoli-umd');
+var prep = require('./lib/package');
 
 function getDirectives(main) {
   var segs = main.split('/');
@@ -97,10 +97,10 @@ module.exports = function(options) {
     npmImports: npmImports
   });
 
-  var umd = umdify([cjs], directives.entry, directives.entry, {
+  var artifact = prep(cjs, {
     amdModuleId: options.amdModuleId || null,
     globalAlias: options.globalName || p.name
   });
 
-  return umd;
+  return artifact;
 };
