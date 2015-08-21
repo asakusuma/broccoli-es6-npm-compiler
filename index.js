@@ -1,4 +1,4 @@
-var transpileES6 = require('broccoli-es6modules');
+var babel = require('broccoli-babel-transpiler');
 var browserify = require('./lib/browserify');
 var fs = require('fs');
 var acorn = require('acorn');
@@ -83,9 +83,7 @@ module.exports = function(options) {
       }
     });
 
-    js = new transpileES6(es6Directives.parent, {
-      format: 'cjs'
-    });
+    js = new babel(es6Directives.parent, {});
   } else {
     throw 'You must declare a jsnext:main and main file for the module: ' + p.name;
   }

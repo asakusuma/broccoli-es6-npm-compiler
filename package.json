@@ -24,7 +24,7 @@
   "dependencies": {
     "acorn": "1.0.3",
     "broccoli": "0.15.3",
-    "broccoli-es6modules": "0.5.1",
+    "broccoli-babel-transpiler": "5.4.3",
     "broccoli-filter": "0.1.14",
     "broccoli-writer": "0.1.1",
     "browserify": "10.1.3",
